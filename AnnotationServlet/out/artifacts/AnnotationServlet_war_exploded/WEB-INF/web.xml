@@ -9,7 +9,7 @@
         <filter-name>AnnotationHandleFilter</filter-name>
         <filter-class>com.zuhd.web.AnnotationHandleFilter</filter-class>
         <init-param>
-            <description>配置要扫描包及其子包, 如果有多个包,以逗号分隔</description>
+            <description>package name split by comma</description>
             <param-name>basePackage</param-name>
             <param-value>com.zuhd.web,com.zuhd</param-value>
             <!-- <param-value>me.gacl.web.controller</param-value> -->
@@ -18,7 +18,22 @@
 
     <filter-mapping>
         <filter-name>AnnotationHandleFilter</filter-name>
-        <!-- 拦截后缀是.do的请求 -->
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <servlet-name>AnnotationHandleServlet</servlet-name>
+        <servlet-class>com.zuhd.web.AnnotationHandleServlet</servlet-class>
+        <init-param>
+            <description>AnnotationHandle Servlet</description>
+            <param-name>basePackage</param-name>
+            <param-value>com.zuhd.web,com.zuhd</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AnnotationHandleServlet</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
 </web-app>

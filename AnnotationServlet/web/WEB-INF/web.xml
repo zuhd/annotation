@@ -20,4 +20,20 @@
         <filter-name>AnnotationHandleFilter</filter-name>
         <url-pattern>*.do</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <servlet-name>AnnotationHandleServlet</servlet-name>
+        <servlet-class>com.zuhd.web.AnnotationHandleServlet</servlet-class>
+        <init-param>
+            <description>AnnotationHandle Servlet</description>
+            <param-name>basePackage</param-name>
+            <param-value>com.zuhd.web,com.zuhd</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AnnotationHandleServlet</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -84,6 +84,12 @@ public class AnnotationHandleFilter implements Filter
             String reqMethod = req.getMethod();
             String requestServletName = uri.substring(contextPath.length(), uri.lastIndexOf("."));
             Class<?> clazz = mapClass.get(requestServletName);
+            if (null == clazz)
+            {
+                System.out.println("no such class!");
+                filterChain.doFilter(req, resp);
+                return;
+            }
             Object obj = null;
 
             try
@@ -98,6 +104,7 @@ public class AnnotationHandleFilter implements Filter
             {
                 e.printStackTrace();
             }
+
 
             Method targetMethod = null;
             if (reqMethod.equalsIgnoreCase("get"))
@@ -142,6 +149,11 @@ public class AnnotationHandleFilter implements Filter
             String invokeMethodName = uri.substring(uri.lastIndexOf("!") + 1, uri.lastIndexOf("."));
 
             Class<?> clazz = mapClass.get(requestServletName);
+            if (null == clazz)
+            {
+                filterChain.doFilter(req, resp);
+                return;
+            }
 
             Object obj = null;
             try
@@ -190,7 +202,7 @@ public class AnnotationHandleFilter implements Filter
                 {
                     try
                     {
-                        method.invoke(obj, initParams);
+                        method.invoke(obj, mapInitParams);
                     }
                     catch (IllegalAccessException e)
                     {
@@ -201,30 +213,29 @@ public class AnnotationHandleFilter implements Filter
                         e.printStackTrace();
                     }
                 }
+            }
 
-                System.out.println("invoke method name:" + invokeMethodName);
+            System.out.println("invoke method name:" + invokeMethodName);
 
+            try
+            {
+                Method targetMethod = clazz.getDeclaredMethod(invokeMethodName, HttpServletRequest.class, HttpServletResponse.class);
                 try
                 {
-                    Method targetMethod = clazz.getDeclaredMethod(invokeMethodName, HttpServletRequest.class, HttpServletResponse.class);
-                    try
-                    {
-                        targetMethod.invoke(obj, req, resp);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    catch (InvocationTargetException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    targetMethod.invoke(obj, req, resp);
                 }
-                catch (NoSuchMethodException e)
+                catch (IllegalAccessException e)
                 {
                     e.printStackTrace();
                 }
-
+                catch (InvocationTargetException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            catch (NoSuchMethodException e)
+            {
+                e.printStackTrace();
             }
         }
     }
